@@ -57,6 +57,11 @@ class SelectableMathSelectionGestureDetectorBuilder
             cause: SelectionChangedCause.tap,
           );
           break;
+        default:
+          delegate.selectPositionAt(
+            from: lastTapDownPosition!,
+            cause: SelectionChangedCause.tap,
+          );
       }
     }
     // if (_state.widget.onTap != null)

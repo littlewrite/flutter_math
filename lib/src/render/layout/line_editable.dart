@@ -487,6 +487,13 @@ class RenderEditableLine extends RenderLine {
           cursorHeight, // - 2.0 * _kCaretHeightOffset,
         );
         break;
+        default: 
+                _caretPrototype = Rect.fromLTWH(
+          0.0,
+          0.0, // _kCaretHeightOffset,
+          _cursorWidth,
+          cursorHeight, // - 2.0 * _kCaretHeightOffset,
+        );
     }
 
     var caretRect = _caretPrototype

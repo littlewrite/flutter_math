@@ -242,7 +242,8 @@ class SelectableMath extends StatelessWidget {
         MathOptions(
           style: mathStyle,
           fontSize: effectiveTextStyle.fontSize! * textScaleFactor,
-          mathFontOptions: effectiveTextStyle.fontWeight != FontWeight.normal && effectiveTextStyle.fontWeight != null
+          mathFontOptions: effectiveTextStyle.fontWeight != FontWeight.normal &&
+                  effectiveTextStyle.fontWeight != null
               ? FontOptions(fontWeight: effectiveTextStyle.fontWeight!)
               : null,
           logicalPpi: logicalPpi,
@@ -303,6 +304,14 @@ class SelectableMath extends StatelessWidget {
             selectionTheme.selectionColor ?? theme.colorScheme.primary;
 
         break;
+      default:
+        forcePressEnabled = false;
+        textSelectionControls ??= materialTextSelectionControls;
+        paintCursorAboveText = false;
+        cursorOpacityAnimates = false;
+        cursorColor ??= selectionTheme.cursorColor ?? theme.colorScheme.primary;
+        selectionColor =
+            selectionTheme.selectionColor ?? theme.colorScheme.primary;
     }
 
     return RepaintBoundary(
@@ -482,6 +491,8 @@ class InternalSelectableMathState extends State<InternalSelectableMath>
       case TargetPlatform.linux:
       case TargetPlatform.windows:
       // Do nothing.
+      default:
+        break;
     }
   }
 
