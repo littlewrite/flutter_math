@@ -23,11 +23,11 @@ class LayoutBuilderPreserveBaseline
 class _RenderLayoutBuilderPreserveBaseline extends RenderBox
     with
         RenderObjectWithChildMixin<RenderBox>,
+        RenderObjectWithLayoutCallbackMixin,
         RenderConstrainedLayoutBuilder<BoxConstraints, RenderBox> {
   @override
   double? computeDistanceToActualBaseline(TextBaseline baseline) =>
-      child?.getDistanceToActualBaseline(baseline) ??
-      super.computeDistanceToActualBaseline(baseline);
+      child?.getDistanceToActualBaseline(baseline);
 
   @override
   double computeMinIntrinsicWidth(double height) {
@@ -54,18 +54,13 @@ class _RenderLayoutBuilderPreserveBaseline extends RenderBox
   }
 
   @override
-  Size computeDryLayout(BoxConstraints constraints) {
-    assert(debugCannotComputeDryLayout(
-        reason:
-            'Calculating the dry layout would require running the layout callback '
-            'speculatively, which might mutate the live render object tree.'));
-    return Size.zero;
-  }
+  Size computeDryLayout(BoxConstraints constraints) =>
+      child?.getDryLayout(constraints) ?? Size.zero;
 
   @override
   void performLayout() {
     final constraints = this.constraints;
-    rebuildIfNecessary();
+    runLayoutCallback();
     if (child != null) {
       child!.layout(constraints, parentUsesSize: true);
       size = constraints.constrain(child!.size);

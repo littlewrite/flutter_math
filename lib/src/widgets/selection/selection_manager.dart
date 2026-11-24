@@ -95,6 +95,28 @@ mixin SelectionManagerMixin<T extends StatefulWidget> on State<T>
     onSelectionChanged(selection, cause);
   }
 
+  // Math is rendered as one non-scrollable block, so there is no caret that
+  // can be scrolled to independently; reveal the block itself. This is a
+  // no-op when the widget is not inside a scrollable.
+  @override
+  void bringIntoView(TextPosition position) {
+    if (!mounted) {
+      return;
+    }
+    Scrollable.ensureVisible(context);
+  }
+
+  @override
+  void selectAll(SelectionChangedCause cause) {
+    handleSelectionChanged(
+      TextSelection(
+        baseOffset: 0,
+        extentOffset: controller.ast.greenRoot.capturedCursor - 1,
+      ),
+      cause,
+    );
+  }
+
   void selectPositionAt({
     required Offset from,
     Offset? to,

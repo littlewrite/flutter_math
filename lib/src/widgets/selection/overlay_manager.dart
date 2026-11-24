@@ -134,13 +134,28 @@ mixin SelectionOverlayManagerMixin<T extends StatefulWidget>
         dragStartBehavior: dragStartBehavior,
         debugRequiredFor: widget,
       );
-      _selectionOverlay!.handlesVisible = _shouldShowSelectionHandles(cause);
+      // Selection handles are user-facing affordances. Showing them for
+      // programmatic (exterior) selection changes puts their 48px hit areas on
+      // top of neighbouring widgets, swallowing taps meant for them.
+      final bool showHandles = extraCause == ExtraSelectionChangedCause.exterior
+          ? false
+          : _shouldShowSelectionHandles(cause);
+      _selectionOverlay!.handlesVisible = showHandles;
+
+      final MathSelectionOverlay overlay = _selectionOverlay!;
+      void showOverlays() {
+        overlay.showHandles();
+        if (toolbarVisible && !controller.selection.isCollapsed) {
+          overlay.showToolbar();
+        }
+      }
+
       if (SchedulerBinding.instance.schedulerPhase ==
           SchedulerPhase.persistentCallbacks) {
         SchedulerBinding.instance
-            .addPostFrameCallback((_) => _selectionOverlay!.showHandles());
+            .addPostFrameCallback((_) => showOverlays());
       } else {
-        _selectionOverlay!.showHandles();
+        showOverlays();
       }
       // _selectionOverlay.showHandles();
       // }
